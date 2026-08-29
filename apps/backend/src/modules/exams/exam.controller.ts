@@ -3,7 +3,7 @@ import type { Response } from "express";
 import type { AuthenticatedRequest } from "../../middleware/auth.middleware.js";
 
 import { createExamSchema } from "./exam.validation.js";
-import { createExam,getExams } from "./exam.service.js";
+import { createExam,getExams,publishExam } from "./exam.service.js";
 
 
 export async function createExamController(
@@ -71,5 +71,51 @@ export async function getExamsController(
     data: {
       exams
     }
+  });
+}
+
+export async function publishExamController(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  const {
+    clubId,
+    examId
+  } = req.params;
+
+  if (!clubId || !examId) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: "INVALID_PARAMS",
+        message:
+          "Club ID and Exam ID are required"
+      }
+    });
+  }
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      error: {
+        code: "UNAUTHORIZED",
+        message:
+          "Authentication required"
+      }
+    });
+  }
+
+  const exam = await publishExam(
+    clubId,
+    examId
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      exam
+    },
+    message:
+      "Exam published successfully"
   });
 }

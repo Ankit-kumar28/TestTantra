@@ -9,6 +9,8 @@ import examSessionRoutes
 
 import questionRoutes from "../modules/questions/question.routes.js";
 import examQuestionRoutes from "../modules/exam-questions/exam-question.routes";
+import studentRoutes from "../modules/student/student.routes.js";
+import examAttemptRoutes from "../modules/exam-attempts/exam-attempt.routes.js";
 
 
 const router = Router();
@@ -36,6 +38,16 @@ router.use(
 router.use(
   "/clubs/:clubId/exams/:examId/sessions/:sessionId/questions",
   examQuestionRoutes
+);
+
+router.use(
+  "/student",
+  studentRoutes
+);
+
+router.use(
+  "/clubs/:clubId",
+  examAttemptRoutes
 );
 
 

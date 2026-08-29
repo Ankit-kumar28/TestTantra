@@ -6,7 +6,8 @@ import { requireClubRole } from "../../middleware/club-authorization.middleware.
 
 import {
   createExamController,
-  getExamsController
+  getExamsController,
+  publishExamController
 } from "./exam.controller.js";
 
 const router = Router({ mergeParams: true });
@@ -23,6 +24,14 @@ router.get(
   authenticate,
   requireClubRole(["ADMIN", "COORDINATOR"]),
   getExamsController
+);
+
+
+router.patch(
+  "/:examId/publish",
+  authenticate,
+  requireClubRole(["ADMIN"]),
+  publishExamController
 );
 
 export default router;
