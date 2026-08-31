@@ -1,25 +1,44 @@
 import { prisma } from "../../config/database.js";
 import type { CreateClubInput } from "./club.types.js";
 
+export function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export async function createClub(
   input: CreateClubInput,
   userId: string
 ) {
-  const existingClub = await prisma.club.findUnique({
-    where: {
-      slug: input.slug
-    }
+  let slug = input.slug
+    ? generateSlug(input.slug)
+    : generateSlug(input.name);
+
+  if (!slug) slug = "club";
+
+  // Collision resolution: append counter (-2, -3, etc.) if slug exists
+  let existingClub = await prisma.club.findUnique({
+    where: { slug }
   });
 
-  if (existingClub) {
-    throw new Error("CLUB_SLUG_ALREADY_EXISTS");
+  let counter = 2;
+  const baseSlug = slug;
+  while (existingClub) {
+    slug = `${baseSlug}-${counter}`;
+    existingClub = await prisma.club.findUnique({
+      where: { slug }
+    });
+    counter++;
   }
 
   const result = await prisma.$transaction(async (tx) => {
     const club = await tx.club.create({
       data: {
         name: input.name,
-        slug: input.slug,
+        slug,
         description: input.description,
         collegeName: input.collegeName,
         contactEmail: input.contactEmail,

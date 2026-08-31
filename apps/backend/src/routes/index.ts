@@ -8,7 +8,7 @@ import examSessionRoutes
   from "../modules/exam-sessions/exam-session.routes.js";
 
 import questionRoutes from "../modules/questions/question.routes.js";
-import examQuestionRoutes from "../modules/exam-questions/exam-question.routes";
+import examQuestionRoutes from "../modules/exam-questions/exam-question.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import examAttemptRoutes from "../modules/exam-attempts/exam-attempt.routes.js";
 

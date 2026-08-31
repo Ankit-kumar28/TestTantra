@@ -47,6 +47,13 @@ export async function loginUser(input: LoginInput) {
   const user = await prisma.user.findUnique({
     where: {
       email: input.email
+    },
+    include: {
+      memberships: {
+        include: {
+          club: true
+        }
+      }
     }
   });
 
@@ -83,7 +90,9 @@ export async function loginUser(input: LoginInput) {
       id: user.id,
       name: user.name,
       email: user.email,
-      status: user.status
+      status: user.status,
+      isPlatformAdmin: user.isPlatformAdmin,
+      clubMemberships: user.memberships
     },
     accessToken
   };

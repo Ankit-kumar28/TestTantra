@@ -13,7 +13,8 @@ export const createClubSchema = z.object({
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug must contain lowercase letters, numbers and hyphens only"
-    ),
+    )
+    .optional(),
 
   description: z
     .string()

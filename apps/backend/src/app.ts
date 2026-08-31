@@ -9,7 +9,8 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: "http://localhost:5173"
+    origin: true,
+    credentials: true,
   })
 );
 
@@ -23,5 +24,18 @@ app.get("/api/v1/health", (_req, res) => {
 });
 
 app.use("/api/v1", apiRoutes);
+
+// Global Error Handling Middleware
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Backend Internal Error:", err);
+  const statusCode = err.statusCode || err.status || 500;
+  res.status(statusCode).json({
+    success: false,
+    error: {
+      code: err.code || "INTERNAL_SERVER_ERROR",
+      message: err.message || "An internal server error occurred"
+    }
+  });
+});
 
 export default app;
